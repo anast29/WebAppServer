@@ -3,9 +3,10 @@ const WebSocketServer = require('ws').Server,
 const JSON = require('circular-json');
 webSocket.on('connection', function (ws) {
     ws.onmessage = function(message) {
-        const msg = JSON.stringify(message);
-        console.log(JSON.parse(msg));
+        const msg = JSON.stringify(message, ["data"]);
+        console.log('Message: %s', msg);
     };
+    ws.send('Answer');
     ws.onclose = function() {
 
     };
