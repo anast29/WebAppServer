@@ -13,6 +13,7 @@
   "author": "Ivanova Anastasiia",
   "license": "ISC",
   "dependencies": {
+    "circular-json": "^0.5.9",
     "express": "^4.16.4",
     "ws": "^6.1.3"
   }
