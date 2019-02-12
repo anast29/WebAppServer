@@ -1,7 +1,7 @@
 const WebSocketServer = require('ws').Server,
     webSocket = new WebSocketServer({port: 8000}, {perMessageDeflate: false});
 const JSON = require('circular-json');
-var matrix = [];
+var str=String();
 
 function getRandomArbitary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
@@ -12,30 +12,25 @@ function createMatrix() {
     for (let i = 0; i <= 10; i++) {
         matrix[i]=[];
         for (let j = 0; j <= 10; j++) {
-            matrix[0][0]='  ';
+            matrix[0][0]=' ';
+            str += matrix[0][0];
             if (i===0) {
-                let ch = 64;
+                let ch = 65;
                 while (ch < 75) {
-                    matrix[0][j] = String.fromCharCode(ch) + ' ';
+                    matrix[0][j] = String.fromCharCode(ch);
+                    str += matrix[0][j] + ' ';
                     ch++;
                     j++;
                 }
             } else if (j===0) {
-                matrix[i][j] = i+') ';
+                matrix[i][j] = i+'|';
+                str+=matrix[i][j] + ' ';
             } else {
-                matrix[i][j]=getRandomArbitary(0,9) + ' ';
+                matrix[i][j]=getRandomArbitary(0,9);
+                str+=matrix[i][j] + '  ';
             }
         }
-    }
-    console.log(matrix);
-    let str='', remove, i=0;
-    let buf = matrix;
-    while(i < 10) {
-        str.concat(buf.slice(0,1).join('\n'));
-        console.log(buf.slice(0,1).join('\n'));
-        //matrix = buf.splice(0,1);
-        remove = buf.splice(0,1);
-        i++;
+        str+='\n';
     }
     console.log(str);
 }
@@ -49,7 +44,7 @@ webSocket.on('connection', function (ws) {
 
     createMatrix();
 
-    ws.send();
+    ws.send(str);
 
     ws.onclose = function() {
     };
