@@ -3,9 +3,9 @@ const ws = require('./index');
 const app = express();
 
 //Generate matrix
-const speakeasy = require('speakeasy');
-const secret = speakeasy.generateSecret({length: 20});
-console.log(secret.base32);
+// const speakeasy = require('speakeasy');
+// const secret = speakeasy.generateSecret({length: 20});
+// console.log(secret.base32);
 
 
 app.use('/', function (req, res) {
