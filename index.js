@@ -1,7 +1,7 @@
 const WebSocketServer = require('ws').Server,
     webSocket = new WebSocketServer({port: 8000}, {perMessageDeflate: false});
 const JSON = require('circular-json');
-let str=String(), code=String() , matrix = [], count=0, passw=String(), user_passw=String();
+let str=String(), code=String() , matrix = [], count=0, passw=String(), user_passw=String(), mass_let=String(), mass_num=String(), num;
 function getRandomArbitary(min, max) {
     return Math.round(Math.random() * (max - min) + min);
 }
@@ -30,32 +30,43 @@ function createMatrix() {
         }
         str+='\n';
     }
-    console.log(matrix[5][1]);
 }
 
 function createPassw() {
     let letter = ['A','B','C','D','E','F','G','H','I','J'];
     while (count < 4) {
         code = Math.floor(Math.random() * letter.length);
-        passw+=letter[code]+getRandomArbitary(1,10) + ' ';
-        count++;
+        num = getRandomArbitary(1, 10);
+        if (~passw.indexOf(letter[code] + num)) {
+            console.log('dublicate');
+        } else {
+            passw += letter[code] + num + ' ';
+            mass_let += letter[code] + ' ';
+            mass_num += num + ' ';
+            count++;
+        }
+
     }
     console.log(passw);
 }
 
 function checkMessage() {
     let k=0,i=1,j,f_elem=String(),s_elem=String();
-    const elem = passw.replace(/\s/g, '').split('');
-    console.log(elem);
-    while(k<9) {
+    const let_elem = mass_let.substring(0, mass_let.length - 1).split(' ');
+    const num_elem = mass_num.substring(0, mass_num.length - 1).split(' ');
+    console.log(let_elem);
+    console.log(num_elem);
+    while(k<5) {
         for (j = 0; j < 10; j++) {
-            if (matrix[0][j] === elem[k]) {
+            if (matrix[0][j] === let_elem[k]) {
                 s_elem += j;
+                // console.log(j);
             }
         }
-        for ( i = 1; i <= 10; i++) {
-            if (matrix[i][0] === Number(elem[k])) {
+        for ( i = 0; i < 10; i++) {
+            if (matrix[i][0] === Number(num_elem[k])) {
                 f_elem += i;
+                // console.log(i);
             }
         }
         k++;
@@ -65,7 +76,6 @@ function checkMessage() {
         user_passw +=matrix[Number(f_elem.charAt(y))][Number(s_elem.charAt(y))+1];
     }
     console.log(user_passw);
-
 }
 
 webSocket.on('connection', function (ws) {
@@ -76,7 +86,7 @@ webSocket.on('connection', function (ws) {
     ws.onmessage = function(message) {
         //const msg = JSON.stringify(message, ["data"]);
         console.log('Message: %s', message.data);
-        if (message.data === user_passw) {
+        if (message.data.replace(/\s/g, '') === user_passw) {
             ws.send('Success');
         } else {
             ws.send('Wrong password');
